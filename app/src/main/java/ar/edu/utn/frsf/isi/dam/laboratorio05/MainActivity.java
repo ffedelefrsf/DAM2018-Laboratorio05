@@ -60,11 +60,18 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                                 break;
                             case R.id.optVerMapa:
                                 //TODO HABILITAR
-                                //tag="mapaReclamos";
-                               // fragment =  getSupportFragmentManager().findFragmentByTag(tag);
+                                tag="mapaReclamos";
+                                fragment =  getSupportFragmentManager().findFragmentByTag(tag);
                                 //TODO si "fragment" es null entonces crear el fragmento mapa, agregar un bundel con el parametro tipo_mapa
+                                if (fragment==null){
+                                    fragment = new MapaFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("tipo_mapa", 1);
+                                    fragment.setArguments(bundle);
+                                }
                                 // configurar a la actividad como listener de los eventos del mapa ((MapaFragment) fragment).setListener(this);
-                               // fragmentTransaction = true;
+                                //((MapaFragment) fragment).setListener(MainActivity.this);
+                                fragmentTransaction = true;
                                 break;
                             case R.id.optHeatMap:
                                 //TODO HABILITAR

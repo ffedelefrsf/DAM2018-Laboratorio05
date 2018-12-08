@@ -12,7 +12,7 @@
     <FrameLayout
         android:id="@+id/contenido"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent" />
 
     <!-- Layout del menú lateral (Navigation View) -->
     <android.support.design.widget.NavigationView
