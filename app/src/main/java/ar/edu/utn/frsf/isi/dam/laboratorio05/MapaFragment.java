@@ -1,10 +1,9 @@
 package ar.edu.utn.frsf.isi.dam.laboratorio05;
 
 
-import android.location.*;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +12,13 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.*;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class
-MapaFragment extends SupportMapFragment implements OnMapReadyCallback {
+
+public class MapaFragment extends SupportMapFragment implements OnMapReadyCallback {
 
     private GoogleMap miMapa;
 

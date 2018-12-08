@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ar.edu.utn.frsf.isi.dam.laboratorio05">
 
+
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -23,5 +24,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/mi_clave_mapas" />
+
     </application>
 </manifest>
