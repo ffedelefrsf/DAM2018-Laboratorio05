@@ -1,0 +1,59 @@
+package ar.edu.utn.frsf.isi.dam.laboratorio05;
+
+
+import android.location.*;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.*;
+
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class
+MapaFragment extends SupportMapFragment implements OnMapReadyCallback {
+
+    private GoogleMap miMapa;
+
+
+    public MapaFragment() {
+    }
+
+    @Override
+    public
+    View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+
+        int tipoMapa = 0;
+        Bundle argumentos = getArguments();
+        if (argumentos != null){
+            tipoMapa = argumentos.getInt("tipo_mapa", 0);
+        }
+        if (tipoMapa>=0 && tipoMapa <=4){
+            miMapa.setMapType(tipoMapa);
+        }
+        else{
+            Log.d(this.getClass().getSimpleName(),"Error tipo mapa no válido");
+        }
+
+        getMapAsync(this);
+        return rootView;
+    }
+    @Override
+    public void
+    onMapReady(GoogleMap map) {
+
+        miMapa = map;
+
+    }
+}
