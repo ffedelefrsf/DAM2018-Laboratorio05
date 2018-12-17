@@ -4,6 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 
+import com.google.android.gms.maps.model.LatLng;
+
 @Entity
 public class Reclamo {
 
@@ -65,5 +67,9 @@ public class Reclamo {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public LatLng getPosition(){
+        return new LatLng(this.latitud, this.longitud);
     }
 }

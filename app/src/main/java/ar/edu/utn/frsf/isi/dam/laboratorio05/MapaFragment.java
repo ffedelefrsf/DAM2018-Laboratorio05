@@ -14,10 +14,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ar.edu.utn.frsf.isi.dam.laboratorio05.modelo.MyDatabase;
+import ar.edu.utn.frsf.isi.dam.laboratorio05.modelo.Reclamo;
+import ar.edu.utn.frsf.isi.dam.laboratorio05.modelo.ReclamoDao;
 
 
 /**
@@ -38,7 +48,8 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
     private int tipoMapa = 0;
     private Boolean permission=false;
     private OnMapaListener listener;
-
+    private ReclamoDao reclamoDao;
+    private ArrayList<Reclamo> listaReclamos= new ArrayList<Reclamo>();
     public MapaFragment() {
     }
 
@@ -52,7 +63,8 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         if (argumentos != null){
             tipoMapa = argumentos.getInt("tipo_mapa", 0);
         }
-
+        reclamoDao = MyDatabase.getInstance(this.getActivity()).getReclamoDao();
+        cargarReclamos();
         getMapAsync(this);
         return rootView;
     }
@@ -69,6 +81,7 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         try{
             if(permission){
                 miMapa.setMyLocationEnabled(true);
+                miMapa.getUiSettings().setMyLocationButtonEnabled(true);
             }
             else{
                 getPermission();
@@ -83,6 +96,22 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
                     listener.coordenadasSeleccionadas(latLng);
                 }
             });
+        }
+        if (tipoMapa==2){
+
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+            if (!listaReclamos.isEmpty()) {
+                for (Reclamo r : listaReclamos) {
+                    miMapa.addMarker(new MarkerOptions().position(r.getPosition())
+                            .title(r.getId() + "[" + r.getTipo().toString() + "]")
+                            .snippet(r.getReclamo())
+                    );
+                    builder.include(r.getPosition());
+                }
+                miMapa.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 300));
+            }
+
         }
 
     }
@@ -110,6 +139,19 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         }
 
     }
+    public void cargarReclamos(){
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                if(!listaReclamos.isEmpty())listaReclamos.clear();
+                listaReclamos.addAll(reclamoDao.getAll());
+            }
+        };
+        Thread t1 = new Thread(r);
+        t1.start();
+    }
+
+
 
 
 }
