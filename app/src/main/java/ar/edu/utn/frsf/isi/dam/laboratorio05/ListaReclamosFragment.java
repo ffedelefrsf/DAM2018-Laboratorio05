@@ -1,8 +1,10 @@
 package ar.edu.utn.frsf.isi.dam.laboratorio05;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,8 +81,10 @@ public class ListaReclamosFragment extends Fragment {
 
         @Override
         public void mostrarMapa(int id) {
-            Fragment f = null;// setear el fragmento del mapa
+            Fragment f = new MapaFragment();
             Bundle args = new Bundle();
+            args.putInt("tipo_mapa", 3);
+            args.putInt("idReclamo", id);
             // setear los parametros tipo_mapa y idReclamo en el Bundle args
             f.setArguments(args);
             getActivity().getSupportFragmentManager()

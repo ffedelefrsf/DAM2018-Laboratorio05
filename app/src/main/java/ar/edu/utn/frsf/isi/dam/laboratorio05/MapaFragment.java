@@ -4,6 +4,7 @@ package ar.edu.utn.frsf.isi.dam.laboratorio05;
 
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -46,7 +49,9 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 
     private GoogleMap miMapa;
     private int tipoMapa = 0;
+    private int reclamoId;
     private Boolean permission=false;
+    private Reclamo reclamo;
     private OnMapaListener listener;
     private ReclamoDao reclamoDao;
     private ArrayList<Reclamo> listaReclamos= new ArrayList<Reclamo>();
@@ -63,6 +68,8 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         if (argumentos != null){
             tipoMapa = argumentos.getInt("tipo_mapa", 0);
         }
+        if(tipoMapa==3) reclamoId=argumentos.getInt("idReclamo", 0);
+
         reclamoDao = MyDatabase.getInstance(this.getActivity()).getReclamoDao();
         cargarReclamos();
         getMapAsync(this);
@@ -113,6 +120,23 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
             }
 
         }
+        if (tipoMapa==3){
+
+            miMapa.addMarker(new MarkerOptions().position(reclamo.getPosition())
+                    .title(reclamo.getId() + "[" + reclamo.getTipo().toString() + "]")
+                    .snippet(reclamo.getReclamo())
+            );
+
+            miMapa.addCircle(new CircleOptions().center(reclamo.getPosition())
+            .radius(500).strokeColor(Color.RED)
+            .fillColor(0x220000FF)
+            .strokeWidth(5));
+
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(reclamo.getPosition())
+                    .zoom(15).build();
+
+            miMapa.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
 
     }
 
@@ -145,6 +169,8 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
             public void run() {
                 if(!listaReclamos.isEmpty())listaReclamos.clear();
                 listaReclamos.addAll(reclamoDao.getAll());
+
+                if (tipoMapa==3)reclamo= reclamoDao.getById(reclamoId);
             }
         };
         Thread t1 = new Thread(r);
