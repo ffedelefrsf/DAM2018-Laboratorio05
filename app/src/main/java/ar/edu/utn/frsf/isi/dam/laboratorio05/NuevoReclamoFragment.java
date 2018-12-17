@@ -24,8 +24,7 @@ public class NuevoReclamoFragment extends Fragment {
         public void obtenerCoordenadas();
     }
 
-    public void setListener(OnNuevoLugarListener listener) {
-        this.listener = listener;
+    public void setListener(OnNuevoLugarListener listener) { this.listener = listener;
     }
 
     private Reclamo reclamoActual;

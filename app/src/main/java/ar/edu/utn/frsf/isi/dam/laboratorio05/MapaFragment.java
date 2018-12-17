@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +17,27 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 
-public class MapaFragment extends SupportMapFragment implements OnMapReadyCallback {
+public class MapaFragment extends SupportMapFragment implements OnMapReadyCallback{
+
+            public interface OnMapaListener{
+                public void coordenadasSeleccionadas(LatLng c);
+            }
+
+    public void setListener (OnMapaListener listener){
+           this.listener=listener;
+    }
 
     private GoogleMap miMapa;
     private int tipoMapa = 0;
     private Boolean permission=false;
-
+    private OnMapaListener listener;
 
     public MapaFragment() {
     }
@@ -54,12 +64,7 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
     onMapReady(GoogleMap map) {
 
         miMapa = map;
-        if (tipoMapa>=0 && tipoMapa <=4){
-            miMapa.setMapType(tipoMapa);
-        }
-        else{
-            Log.d(this.getClass().getSimpleName(),"Error tipo mapa no válido");
-        }
+        miMapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         getPermission();
         try{
             if(permission){
@@ -70,6 +75,14 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
             }
         }catch (Exception e){
             Log.e("Excepción: %s", e.getMessage());
+        }
+        if (tipoMapa==5){
+            miMapa.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                @Override
+                public void onMapLongClick(LatLng latLng) {
+                    listener.coordenadasSeleccionadas(latLng);
+                }
+            });
         }
 
     }
