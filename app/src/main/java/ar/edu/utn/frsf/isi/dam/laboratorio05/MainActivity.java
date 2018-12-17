@@ -29,10 +29,13 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         shouldDisplayHomeUp();
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         navView = (NavigationView)findViewById(R.id.navview);
-        BienvenidoFragment fragmentInicio = new BienvenidoFragment();
+
+        String tag="bienvenidoFragment";
+        Fragment fragmentInicio = getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragmentInicio==null) fragmentInicio = new BienvenidoFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.contenido, fragmentInicio)
+                .replace(R.id.contenido, fragmentInicio, tag)
                 .commit();
 
         navView.setNavigationItemSelectedListener(
