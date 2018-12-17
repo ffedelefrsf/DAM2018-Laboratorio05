@@ -21,6 +21,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +115,26 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
                 miMapa.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 300));
             }
 
+        }
+        if (tipoMapa==4){
+            List<LatLng> list = null;
+
+            //leer lat longs reclamos
+            if (!listaReclamos.isEmpty()) {
+
+                for (Reclamo r: listaReclamos){
+                    double lat = r.getLatitud();
+                    double lon = r.getLongitud();
+                    list.add(new LatLng(lat,lon));
+                }
+
+            }
+
+            HeatmapTileProvider mProvider = new HeatmapTileProvider.Builder()
+                    .data(list)
+                    .build();
+
+            miMapa.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
         }
 
     }
