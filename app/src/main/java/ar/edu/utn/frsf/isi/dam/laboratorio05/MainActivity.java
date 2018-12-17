@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                                     fragment = new MapaFragment();
                                 }
                                 Bundle bundle = new Bundle();
-                                bundle.putInt("tipo_mapa", 1);
+                                bundle.putInt("tipo_mapa", 2);
                                 fragment.setArguments(bundle);
                                 ((MapaFragment) fragment).setListener(MainActivity.this);
                                 fragmentTransaction = true;
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             fragment.setArguments(bundle);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.contenido, fragment)
+                    .replace(R.id.contenido, fragment, tag)
                     .addToBackStack(null)
                     .commit();
 
