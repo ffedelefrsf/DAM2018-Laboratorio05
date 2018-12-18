@@ -84,10 +84,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                                 //TODO si "fragment" es null entonces crear el fragmento mapa, agregar un bundel con el parametro tipo_mapa
                                 if (fragment==null){
                                     fragment = new MapaFragment();
-                                    Bundle bundel = new Bundle();
-                                    bundel.putInt("tipo_mapa",  4);
-                                    fragment.setArguments(bundel);
                                 }
+                                Bundle bundel = new Bundle();
+                                bundel.putInt("tipo_mapa",  4);
+                                fragment.setArguments(bundel);
                                 ((MapaFragment) fragment).setListener(MainActivity.this);
                                 fragmentTransaction = true;
                                 break;

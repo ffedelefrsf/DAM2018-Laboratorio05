@@ -99,73 +99,79 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         }catch (Exception e){
             Log.e("Excepción: %s", e.getMessage());
         }
-        if (tipoMapa==5){
-            miMapa.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-                @Override
-                public void onMapLongClick(LatLng latLng) {
-                    listener.coordenadasSeleccionadas(latLng);
-                }
-            });
-        }
-        if (tipoMapa==2){
+        switch (tipoMapa){
+            case 5: {
+                miMapa.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                    @Override
+                    public void onMapLongClick(LatLng latLng) {
+                        listener.coordenadasSeleccionadas(latLng);
+                    }
+                });
+                break;
+            }
+            case 2:{
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-            if (!listaReclamos.isEmpty()) {
-                for (Reclamo r : listaReclamos) {
-                    miMapa.addMarker(new MarkerOptions().position(r.getPosition())
-                            .title(r.getId() + "[" + r.getTipo().toString() + "]")
-                            .snippet(r.getReclamo())
-                    );
-                    builder.include(r.getPosition());
+                if (!listaReclamos.isEmpty()) {
+                    for (Reclamo r : listaReclamos) {
+                        miMapa.addMarker(new MarkerOptions().position(r.getPosition())
+                                .title(r.getId() + "[" + r.getTipo().toString() + "]")
+                                .snippet(r.getReclamo())
+                        );
+                        builder.include(r.getPosition());
+                    }
+                    miMapa.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 300));
                 }
+                break;
+            }
+            case 3:{
+                miMapa.addMarker(new MarkerOptions().position(reclamo.getPosition())
+                        .title(reclamo.getId() + "[" + reclamo.getTipo().toString() + "]")
+                        .snippet(reclamo.getReclamo())
+                );
+
+                miMapa.addCircle(new CircleOptions().center(reclamo.getPosition())
+                        .radius(500).strokeColor(Color.RED)
+                        .fillColor(0x220000FF)
+                        .strokeWidth(5));
+
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(reclamo.getPosition())
+                        .zoom(15).build();
+
+                miMapa.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                break;
+            }
+            case 4:{
+                ArrayList<LatLng> list = new ArrayList<>();
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+                //leer lat longs reclamos
+                if (!listaReclamos.isEmpty()) {
+
+                    for (Reclamo r: listaReclamos){
+                        list.add(r.getPosition());
+                        builder.include(r.getPosition());
+                    }
+
+                }
+
+                HeatmapTileProvider mProvider = new HeatmapTileProvider.Builder()
+                        .data(list)
+                        .build();
+
+                miMapa.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
                 miMapa.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 300));
+                break;
             }
-
         }
 
-        if (tipoMapa==4){
-            List<LatLng> list = null;
 
-            //leer lat longs reclamos
-            if (!listaReclamos.isEmpty()) {
 
-                for (Reclamo r: listaReclamos){
-                    double lat = r.getLatitud();
-                    double lon = r.getLongitud();
-                    list.add(new LatLng(lat,lon));
-                }
-
-            }
-
-            HeatmapTileProvider mProvider = new HeatmapTileProvider.Builder()
-                    .data(list)
-                    .build();
-
-            miMapa.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-
-        if (tipoMapa==3){
-
-            miMapa.addMarker(new MarkerOptions().position(reclamo.getPosition())
-                    .title(reclamo.getId() + "[" + reclamo.getTipo().toString() + "]")
-                    .snippet(reclamo.getReclamo())
-            );
-
-            miMapa.addCircle(new CircleOptions().center(reclamo.getPosition())
-            .radius(500).strokeColor(Color.RED)
-            .fillColor(0x220000FF)
-            .strokeWidth(5));
-
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(reclamo.getPosition())
-                    .zoom(15).build();
-
-            miMapa.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-        }
 
     }
 
-    public void getPermission(){
+
+    private void getPermission() {
         if (ActivityCompat.checkSelfPermission(this.getContext(),android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED ) {
             permission = true;
@@ -175,6 +181,7 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
                     1);
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         permission = false;
@@ -201,8 +208,5 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         Thread t1 = new Thread(r);
         t1.start();
     }
-
-
-
 
 }
