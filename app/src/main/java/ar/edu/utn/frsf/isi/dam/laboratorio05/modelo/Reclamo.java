@@ -18,6 +18,7 @@ public class Reclamo {
     private Double longitud;
     private String reclamo;
     private String email;
+    private String imagePath;
     @TypeConverters(TipoReclamoConverter.class)
     private TipoReclamo tipo;
 
@@ -72,4 +73,8 @@ public class Reclamo {
     public LatLng getPosition(){
         return new LatLng(this.latitud, this.longitud);
     }
+
+    public String getImagePath(){return this.imagePath;}
+
+    public void setImagePath(String path){this.imagePath=path;}
 }
