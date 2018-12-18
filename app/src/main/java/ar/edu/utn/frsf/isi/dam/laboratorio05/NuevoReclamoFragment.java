@@ -138,17 +138,19 @@ public class NuevoReclamoFragment extends Fragment {
                                     break;
                                 }
                             }
-                            File file = new File(reclamoActual.getImagePath());
-                            Bitmap imageBitmap = null;
-                            try {
-                                imageBitmap = MediaStore.Images.Media
-                                        .getBitmap(getActivity().getContentResolver(),
-                                                Uri.fromFile(file));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            if (imageBitmap != null) {
-                                image.setImageBitmap(imageBitmap);
+                            if (reclamoActual.getImagePath()!= null) {
+                                File file = new File(reclamoActual.getImagePath());
+                                Bitmap imageBitmap = null;
+                                try {
+                                    imageBitmap = MediaStore.Images.Media
+                                            .getBitmap(getActivity().getContentResolver(),
+                                                    Uri.fromFile(file));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                if (imageBitmap != null) {
+                                    image.setImageBitmap(imageBitmap);
+                                }
                             }
                         }
                     });
