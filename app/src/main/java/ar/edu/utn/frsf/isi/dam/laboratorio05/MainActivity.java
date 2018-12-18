@@ -11,12 +11,14 @@ import android.view.MenuItem;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import ar.edu.utn.frsf.isi.dam.laboratorio05.modelo.Reclamo;
+
 
 // AGREGAR en MapaFragment una interface MapaFragment.OnMapaListener con el método coordenadasSeleccionadas 
 // IMPLEMENTAR dicho método en esta actividad.
 
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener,
-        NuevoReclamoFragment.OnNuevoLugarListener, MapaFragment.OnMapaListener {
+        NuevoReclamoFragment.OnNuevoLugarListener, MapaFragment.OnMapaListener, FormularioBusquedaFragment.onBusquedaListener {
     private DrawerLayout drawerLayout;
     private NavigationView navView;
 
@@ -91,6 +93,16 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                                 ((MapaFragment) fragment).setListener(MainActivity.this);
                                 fragmentTransaction = true;
                                 break;
+                            case R.id.optBusqueda:
+                                tag="formularioBusqueda";
+                                fragment =  getSupportFragmentManager().findFragmentByTag(tag);
+                                if (fragment==null){
+                                    fragment = new FormularioBusquedaFragment();
+                                }
+                                ((FormularioBusquedaFragment) fragment).setListener(MainActivity.this);
+                                fragmentTransaction = true;
+                                break;
+
                         }
 
                         if(fragmentTransaction) {
@@ -164,7 +176,29 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             if (fragment == null) fragment = new MapaFragment();
 
             Bundle bundle = new Bundle();
+            bundle.putInt("tipo_mapa", 1);
+            fragment.setArguments(bundle);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.contenido, fragment, tag)
+                    .addToBackStack(null)
+                    .commit();
+
+            ((MapaFragment) fragment).setListener(MainActivity.this);
+        }
+
+        @Override
+        public void buscar(Reclamo.TipoReclamo reclamo){
+            Fragment fragment =null;
+
+            String tag="mapaReclamos";
+            fragment =  getSupportFragmentManager().findFragmentByTag(tag);
+
+            if (fragment == null) fragment = new MapaFragment();
+
+            Bundle bundle = new Bundle();
             bundle.putInt("tipo_mapa", 5);
+            bundle.putString("tipo_reclamo", reclamo.toString());
             fragment.setArguments(bundle);
             getSupportFragmentManager()
                     .beginTransaction()
