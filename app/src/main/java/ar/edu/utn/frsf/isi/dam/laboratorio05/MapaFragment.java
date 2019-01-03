@@ -155,15 +155,15 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
                         list.add(r.getPosition());
                         b.include(r.getPosition());
                     }
+                    HeatmapTileProvider mProvider = new HeatmapTileProvider.Builder()
+                            .data(list)
+                            .build();
 
+                    miMapa.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+                    miMapa.animateCamera(CameraUpdateFactory.newLatLngBounds(b.build(), 300));
                 }
 
-                HeatmapTileProvider mProvider = new HeatmapTileProvider.Builder()
-                        .data(list)
-                        .build();
 
-                miMapa.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-                miMapa.animateCamera(CameraUpdateFactory.newLatLngBounds(b.build(), 300));
             break;
             case 5:
                 LatLngBounds.Builder build = new LatLngBounds.Builder();
