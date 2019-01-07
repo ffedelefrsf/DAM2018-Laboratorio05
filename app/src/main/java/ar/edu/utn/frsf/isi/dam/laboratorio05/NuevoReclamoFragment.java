@@ -18,10 +18,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -70,7 +74,7 @@ public class NuevoReclamoFragment extends Fragment {
     private String audioPath="";
     static final int REQUEST_IMAGE_SAVE = 1;
     private int RECORD_AUDIO_REQUEST_CODE =123 ;
-    private Boolean permission=false;
+    private Boolean permission=false, reclamoAudio=false, reclamoImagen=true;
     private Chronometer chronometer;
     private SeekBar seekBar;
     private LinearLayout linearLayoutPlay;
@@ -109,6 +113,8 @@ public class NuevoReclamoFragment extends Fragment {
         imageViewPlay = (ImageView) v.findViewById(R.id.imageViewPlay);
         linearLayoutPlay = (LinearLayout) v.findViewById(R.id.linearLayoutPlay);
         seekBar = (SeekBar) v.findViewById(R.id.seekBar);
+
+        btnGuardar.setEnabled(false);
 
         View.OnClickListener listenerPlayer = new View.OnClickListener() {
             @Override
@@ -161,7 +167,62 @@ public class NuevoReclamoFragment extends Fragment {
         reclamoDesc.setEnabled(edicionActivada );
         mail.setEnabled(edicionActivada );
         tipoReclamo.setEnabled(edicionActivada);
-        btnGuardar.setEnabled(edicionActivada);
+
+        if(edicionActivada){
+            tipoReclamo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if(tipoReclamo.getSelectedItem().equals(Reclamo.TipoReclamo.VEREDAS) ||
+                            tipoReclamo.getSelectedItem().equals(Reclamo.TipoReclamo.CALLE_EN_MAL_ESTADO)){
+                        Toast.makeText(getContext(), "Es obligatorio tomar una foto.", Toast.LENGTH_LONG).show();
+                        reclamoImagen=true;
+                        reclamoAudio=false;
+                    }
+                    else{
+                        Toast.makeText(getContext(), "Es obligatorio una descripción o un audio.", Toast.LENGTH_LONG).show();
+                        reclamoImagen=false;
+                        reclamoAudio=true;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        }
+
+        reclamoDesc.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                return false;
+            }
+        });
+
+        reclamoDesc.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (reclamoAudio){
+                    if(reclamoDesc.getText().toString().length()>=8){
+                        btnGuardar.setEnabled(true);
+                    }
+                    else{
+                        btnGuardar.setEnabled(false);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         buscarCoord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,6 +243,7 @@ public class NuevoReclamoFragment extends Fragment {
                 saveOrUpdateReclamo();
             }
         });
+
         return v;
     }
 
@@ -279,6 +341,7 @@ public class NuevoReclamoFragment extends Fragment {
         chronometer.setBase(SystemClock.elapsedRealtime());
 
         Toast.makeText(this.getContext(), "Audio grabado con éxito.", Toast.LENGTH_SHORT).show();
+        if (reclamoAudio) btnGuardar.setEnabled(true);
     }
     private void startPlaying() {
         mPlayer = new MediaPlayer();
@@ -456,6 +519,7 @@ public class NuevoReclamoFragment extends Fragment {
                 dir /* directory */
         );
         imagePath = image.getAbsolutePath();
+
         return image;
     }
 
@@ -474,6 +538,7 @@ public class NuevoReclamoFragment extends Fragment {
             }
             if (imageBitmap != null) {
                 image.setImageBitmap(imageBitmap);
+                if(reclamoImagen) btnGuardar.setEnabled(true);
             }
         }
     }
