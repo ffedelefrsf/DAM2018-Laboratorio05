@@ -15,7 +15,9 @@ import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,13 +117,15 @@ public class NuevoReclamoFragment extends Fragment {
                     case R.id.imageViewRecord:
                         imageViewRecord.setVisibility(View.GONE);
                         imageViewStop.setVisibility(View.VISIBLE);
-                        imageViewStop.setImageResource(R.drawable.ic_stop);
+                        imageViewStop.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_stop));
+                        imageViewStop.refreshDrawableState();
                         startRecording();
                         break;
                     case R.id.imageViewStop:
                         imageViewStop.setVisibility(View.GONE);
                         imageViewPlay.setVisibility(View.VISIBLE);
-                        imageViewPlay.setImageResource(R.drawable.ic_play);
+                        imageViewPlay.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_play));
+                        imageViewPlay.refreshDrawableState();
                         stopRecording();
                         break;
                     case R.id.imageViewPlay:
@@ -256,7 +260,8 @@ public class NuevoReclamoFragment extends Fragment {
         }
         mPlayer = null;
         // Se muestra boton para reproducir
-        imageViewPlay.setImageResource(R.drawable.ic_play);
+        imageViewPlay.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_play));
+        imageViewPlay.refreshDrawableState();
         chronometer.stop();
     }
 
@@ -285,7 +290,8 @@ public class NuevoReclamoFragment extends Fragment {
             Log.e("LOG_TAG", "prepare() failed");
         }
 
-        imageViewPlay.setImageResource(R.drawable.ic_pause);
+        imageViewPlay.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_pause));
+        imageViewPlay.refreshDrawableState();
 
         seekBar.setProgress(lastProgress);
         mPlayer.seekTo(lastProgress);
@@ -297,7 +303,8 @@ public class NuevoReclamoFragment extends Fragment {
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                imageViewPlay.setImageResource(R.drawable.ic_play);
+                imageViewPlay.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_play));
+                imageViewPlay.refreshDrawableState();
                 isPlaying = false;
                 chronometer.stop();
             }
